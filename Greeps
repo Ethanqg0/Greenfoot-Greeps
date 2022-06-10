@@ -1,0 +1,174 @@
+import greenfoot.*;  // (World, Actor, GreenfootImage, and Greenfoot)
+//recompile scenario for any changes
+//use Greep, Creature, and Actor for methods - Mr. Brew
+
+
+/**
+ * A Greep is an alien creature that likes to collect tomatoes.
+ * 
+ * @Ethanqg - Period 8 - Mr. Brew AP Computer Science 
+ * @version 0.1
+ */
+public class Greep extends Creature
+{
+    // Remember: you cannot extend the Greep's memory. So:
+    // no additional fields (other than final fields) allowed in this class!
+    
+    /**
+     * Default constructor for testing purposes.-
+     */
+    public Greep()
+    {
+        this(null);
+    }
+
+    
+    /**
+     * Create a Greep with its home space ship.
+     */
+    public Greep(Ship ship)
+    {
+        super(ship);
+    }
+    
+
+    /**
+     * Do what a greep's gotta do.
+     */
+    public void act()
+    {
+        super.act();   // do not delete! leave as first statement in act().
+        
+
+        if (carryingTomato() )
+        {
+            if ( atShip() )
+            {
+                dropTomato();
+                turn(180);
+                move();
+            }
+            else 
+            {
+                if (!( atWater() == true) )
+                {
+                    turnHome();
+                    move();
+                }    
+                else if ( atWater() == true )
+                {
+                    turn(70);
+                    move();
+                }
+                else if( atWorldEdge() == true )
+                {
+                    turn(70);
+                    move();
+                }
+            }
+        }
+        else 
+        {
+            if ( !getFlag(1) )
+            {
+                move();
+                checkFood();
+                isNewWater();
+                isNewEdge();
+            }
+            else
+            {
+                checkFood();
+            }
+        }
+    }
+
+    public void isNewWater()
+    {
+        if (atWater() == true )
+        {
+            turn(70);
+            move(1);
+        }
+    }
+
+    public void isNewEdge()
+    {
+        if (atWorldEdge() == true )
+        {
+            turn(70);
+            move(1);
+        }
+    }
+
+
+    /**
+     * Is there any food here where we are? If so, try to load some!
+     */
+    public void checkFood()
+    {
+        setFlag(1, false);
+        TomatoPile tomatoes = (TomatoPile) getOneIntersectingObject(TomatoPile.class);
+        if(tomatoes != null) {
+            loadTomato();
+            setFlag(1, true);
+            loadTomato();
+            // Note: this attempts to load a tomato onto *another* Greep. It won't
+            // do anything if we are alone here.
+        }
+    }
+
+    public int checkPaintX()
+    {
+        //check whether there's a paint spit here
+        Paint paintSpit = (Paint) getOneIntersectingObject(Paint.class);
+
+        int deltaX = 0;
+
+        if ( seePaint("red") )
+        {
+            deltaX = paintSpit.getX();
+        }
+
+        return deltaX;
+    }
+
+    public int checkPaintY()
+    {
+        //check whether there's a paint spit here
+        Paint paintSpit = (Paint) getOneIntersectingObject(Paint.class);
+
+        int deltaY = 0;
+
+        if ( seePaint("red") )
+        {
+            deltaY = paintSpit.getY();
+        }
+
+        return deltaY;
+    }
+
+
+
+
+    /**
+     * This method specifies the name of the author (for display on the result board).
+     */
+    public static String getAuthorName()
+    {
+        return "Ethanqg";  // write your name here!
+    }
+
+
+    /**
+     * This method specifies the image we want displayed at any time. (No need 
+     * to change this for the competition.)
+     */
+    public String getCurrentImage()
+    {
+        if(carryingTomato())
+            return "greep-with-food.png";
+        else
+            return "greep.png";
+    }
+}
